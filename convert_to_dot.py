@@ -29,11 +29,11 @@ class Table:
         self.__construct__()
 
     def __construct__(self):
-        self.front_matter = f'''{self.table_name} [ label=<
+        self.front_matter = f'''\n\t {self.table_name} [ label=<
         <table border="0" cellborder="1" cellspacing="0">
         <tr><td><b>{self.table_name}</b></td></tr>
         '''
-        table_end = '</table>>];'
+        table_end = '\t\t' +  '</table>>];'
         self.table_def.append(self.front_matter)
         for col, col_type in self.meta_info:
             self.table_def.append(
@@ -57,7 +57,7 @@ class ERD:
     def __init__(self):
         self.table_tracker = {}
         self.table_gen_code = ['''
-        digraph G {
+    digraph G {
             graph [
                 nodesep=0.5;
                 rankdir="LR";
@@ -69,16 +69,16 @@ class ERD:
                 
             ];
     
-        node [shape=plain, fontname="Helvetica"];
-        edge [
-            dir=both,
-            fontsize=12,
-            arrowsize=0.9,
-            penwidth=1.0,
-            labelangle=32,
-            labeldistance=1.8,
-            fontname="Helvetica"
-        ];''']
+    node [shape=plain, fontname="Helvetica"];
+    edge [
+        dir=both,
+        fontsize=12,
+        arrowsize=0.9,
+        penwidth=1.0,
+        labelangle=32,
+        labeldistance=1.8,
+        fontname="Helvetica"
+    ];''']
 
     def add_table(self, df, table_name):
         table = Table(table=df, table_name=table_name)
@@ -125,8 +125,7 @@ class ERD:
         else:
             arrowhead = 'neneotee'
 
-        #if (isinstance(table1, Table)) and (isinstance(table2, Table)):
-        rel=f'''{table1.table_name}:{left_on}->{table2.table_name}:{right_on} [ 
+        rel=f'''\n\t {table1.table_name}:{left_on}->{table2.table_name}:{right_on} [ 
                 arrowhead={arrowhead}, arrowtail={arrowtail}];'''
         self.table_gen_code.append(rel)
 
@@ -134,7 +133,7 @@ class ERD:
     def write_to_file(self, filename='output.txt'):
         self.filename = filename
         tmp = self.table_gen_code
-        tmp.append('}')
+        tmp.append('\t}')
         self.res = '\n'.join(tmp)
 
         text_file = open(self.filename, "w")
