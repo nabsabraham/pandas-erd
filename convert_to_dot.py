@@ -1,34 +1,6 @@
 import json
 import pandas as pd
 
-table_string='{"columns":["column_name","data_type"],"index":[0,1,2,3,4,5],"data":[["PTNT_IP_ID","INT64"],["PTNT_MATCH_ID","INT64"],["GENDER","STRING"],["birth_year","INT64"],["city","STRING"],["prov","STRING"]]}'
-parse = json.loads(table_string)
-
-
-columns = parse['data']
-table_name = 'RX_VACCINES'
-align = 'left'
-pad = 5
-font_color = 'grey60'
-table_def = []
-
-front = f'''{table_name} [ label=<
-        <table border="0" cellborder="1" cellspacing="0">
-        <tr><td><i>{table_name}</i></td></tr>
-        '''
-end = '</table>>];'
-table_def.append(front)
-for col, col_type in columns:
-    table_def.append('\t' + f'''<tr><td port="{col}" align="{align}" cellpadding="{pad}">{col} <font color="{font_color}">{col_type}</font></td></tr>''')
-
-table_def.append(end)
-res = '\n'.join(table_def)
-#print(res)
-
-#text_file = open("output.txt", "w")
-#text_file.write(res)
-#text_file.close()
-
 
 class Table:
     '''
@@ -36,24 +8,23 @@ class Table:
     table_info: (str) - name of the table
     filename: (str) - filename to save dot code - default is output.txt
     '''
-    def __init__(self, meta_info, table_name):
-        if isinstance(meta_info, str):
-            # this would be the json object after printing the schema from BQ
-            self.meta_info = json.loads(meta_info)
-
-        elif isinstance(meta_info, pd.core.frame.DataFrame):
+    def __init__(self, table, table_name):
+        if isinstance(table, pd.core.frame.DataFrame):
             # pass a whole dataframe
-            meta = meta_info.dtypes
+            meta = table.dtypes
             meta = meta.to_frame().reset_index()
             meta.columns = ['column_name', 'data_type']
             self.meta_info = meta.values.tolist()
 
         else:
-            print(f' {type(meta_info)} not accepted. must be a pandas dataframe')
-            #self.meta_info = json.loads(meta_info.to_json(orient='split'))
-        self.columns = self.meta_info['data']
+            print(f' {type(table)} not accepted. must be a pandas dataframe')
+
         self.table_name = table_name
         self.table_def = []
+
+        self.pad = 5
+        self.align = 'left'
+        self.font_color = 'grey60'
 
         self.__construct__()
 
@@ -62,12 +33,12 @@ class Table:
         <table border="0" cellborder="1" cellspacing="0">
         <tr><td><b>{self.table_name}</b></td></tr>
         '''
-        self.table_end = '</table>>];'
+        table_end = '</table>>];'
         self.table_def.append(self.front_matter)
-        for col, col_type in self.columns:
+        for col, col_type in self.meta_info:
             self.table_def.append(
-                '\t\t' + f'''<tr><td port="{col}" align="{align}" cellpadding="{pad}">{col} <font color="{font_color}">{col_type}</font></td></tr>''')
-        self.table_def.append(end)
+                '\t\t' + f'''<tr><td port="{col}" align="{self.align}" cellpadding="{self.pad}">{col} <font color="{self.font_color}">{col_type}</font></td></tr>''')
+        self.table_def.append(table_end)
 
         self.res = '\n'.join(self.table_def)
 
@@ -82,9 +53,9 @@ class Table:
         print(self.res)
 
 
-
 class ERD:
     def __init__(self):
+        self.table_tracker = {}
         self.table_gen_code = ['''
         digraph G {
             graph [
@@ -109,6 +80,11 @@ class ERD:
             fontname="Helvetica"
         ];''']
 
+    def add_table(self, df, table_name):
+        table = Table(table=df, table_name=table_name)
+        self.table_tracker[table_name] = table
+        self.table_gen_code.append(table.res)
+
     def insert_table(self, table):
         assert isinstance(table, Table), f'The object you are trying to insert is {type(table)} but it should be a Table'
         self.table_gen_code.append(table.res)
@@ -117,7 +93,17 @@ class ERD:
         self.table_gen_code.append('}')
         print(self.table_gen_code)
 
-    def create_edge(self, table1, table2, **kwargs):
+    def create_edge(self, table1_name, table2_name, **kwargs):
+        try:
+            table1 = self.table_tracker[table1_name]
+        except(TableNotFoundError):
+            print(f' table {table1_name} not found in tracker, create one with add_table method')
+
+        try:
+            table2 = self.table_tracker[table2_name]
+        except(TableNotFoundError):
+            print(f' table {table2_name} not found in tracker, create one with add_table method')
+
         left_on = kwargs.get('left_on', '')
         right_on = kwargs.get('right_on', '')
         left_cardinality = kwargs.get('left_cardinality', None)
@@ -137,10 +123,10 @@ class ERD:
         else:
             arrowhead = 'neneotee'
 
-        if (isinstance(table1, Table)) and (isinstance(table2, Table)):
-            rel=f'''{table1.table_name}:{left_on}->{table2.table_name}:{right_on} [ 
+        #if (isinstance(table1, Table)) and (isinstance(table2, Table)):
+        rel=f'''{table1.table_name}:{left_on}->{table2.table_name}:{right_on} [ 
                 arrowhead={arrowhead}, arrowtail={arrowtail}];'''
-            self.table_gen_code.append(rel)
+        self.table_gen_code.append(rel)
 
 
     def write_to_file(self, filename='output.txt'):
@@ -157,15 +143,17 @@ class ERD:
 
 erd = ERD()
 
-meta_string1 ='{"columns":["column_name","data_type"],"index":[0,1,2,3,4,5],"data":[["PTNT_IP_ID","INT64"],["PTNT_MATCH_ID","INT64"],["GENDER","STRING"],["birth_year","INT64"],["city","STRING"],["prov","STRING"]]}'
-meta_string2 = '{"columns":["column_name","data_type"],"index":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],"data":[["PTNT_GUID","STRING"],["PTNT_MATCH_ID","INT64"],["PTNT_IP_ID","INT64"],["PTNT_NO","STRING"],["STORE_CD","STRING"],["PTNT_EFF_FROM_DT","DATE"],["PTNT_EFF_TO_DT","DATE"],["GENDER","STRING"],["PTNT_CITY","STRING"],["PTNT_PSTL_CD_FSA","STRING"],["PTNT_PROV","STRING"],["ADR_EFF_FROM_DT","DATE"],["ADR_EFF_TO_DT","DATE"],["AGE_BUCKET","STRING"],["ENTERPRISE_CD","STRING"],["DIG_PTNT_FLG","STRING"]]}'
+dummy1 = pd.DataFrame(data=[[231, 32, '1 Ottawa Street'], [123, 80, '14 Canada Road']])
+dummy1.columns = ['PTNT_ID', 'STORE_CD', 'STORE_ADDRESS']
+dummy2 = pd.DataFrame(data=[[6342, 23, '2020-01-02', 'L5N1X6'], [3124, 32, '2020-02-02', 'L5N1X6']])
+dummy2.columns = ['PTNT_ID', 'AGE_AT_VACATION', 'DOB', 'POSTAL_CODE']
 
-table1 = Table(meta_string1, 'RX_VAC')
-table2 = Table(meta_string2, 'PTNT_CORE')
+#table1 = Table(dummy1, 'RX_VAC')
+#table2 = Table(dummy2, 'PTNT_CORE')
 
-#erd.insert_table(table1)
-#erd.insert_table(table2)
-erd.create_edge(table1, table2, left_on='PTNT_IP_ID', right_on='PTNT_IP_ID')
+erd.add_table(dummy1, 'RX_VAC')
+erd.add_table(dummy2, 'PTNT_CORE')
+erd.create_edge('RX_VAC', 'PTNT_CORE', left_on='PTNT_ID', right_on='PTNT_ID', right_cardinality='*')
 #erd.print()
 erd.write_to_file()
 #table2 = Table(meta_string, 'PTNT_CORE')
