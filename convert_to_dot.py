@@ -96,13 +96,15 @@ class ERD:
     def create_edge(self, table1_name, table2_name, **kwargs):
         try:
             table1 = self.table_tracker[table1_name]
-        except(TableNotFoundError):
-            print(f' table {table1_name} not found in tracker, create one with add_table method')
+        except:
+            print(f' table {table1_name} not found, create one with add_table method')
+            return
 
         try:
             table2 = self.table_tracker[table2_name]
-        except(TableNotFoundError):
-            print(f' table {table2_name} not found in tracker, create one with add_table method')
+        except:
+            print(f' table {table2_name} not found, create one with add_table method')
+            return
 
         left_on = kwargs.get('left_on', '')
         right_on = kwargs.get('right_on', '')
@@ -140,23 +142,3 @@ class ERD:
         text_file.close()
         print(f'written to {self.filename}')
 
-
-erd = ERD()
-
-dummy1 = pd.DataFrame(data=[[231, 32, '1 Ottawa Street'], [123, 80, '14 Canada Road']])
-dummy1.columns = ['PTNT_ID', 'STORE_CD', 'STORE_ADDRESS']
-dummy2 = pd.DataFrame(data=[[6342, 23, '2020-01-02', 'L5N1X6'], [3124, 32, '2020-02-02', 'L5N1X6']])
-dummy2.columns = ['PTNT_ID', 'AGE_AT_VACATION', 'DOB', 'POSTAL_CODE']
-
-#table1 = Table(dummy1, 'RX_VAC')
-#table2 = Table(dummy2, 'PTNT_CORE')
-
-erd.add_table(dummy1, 'RX_VAC')
-erd.add_table(dummy2, 'PTNT_CORE')
-erd.create_edge('RX_VAC', 'PTNT_CORE', left_on='PTNT_ID', right_on='PTNT_ID', right_cardinality='*')
-#erd.print()
-erd.write_to_file()
-#table2 = Table(meta_string, 'PTNT_CORE')
-#table2.write_to_file()
-#table.print()
-#table2.print()
