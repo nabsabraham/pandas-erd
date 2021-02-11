@@ -142,3 +142,4 @@ class ERD:
         text_file.write(self.res)
         text_file.close()
         print(f'written to {self.filename}')
+

@@ -25,3 +25,4 @@ erd.write_to_file('output.txt')
 
 ### Credits
 Largely inspired by this fab [repo](https://pypi.org/project/ERDot/])!
+* dot documentation can be found [here](https://www.graphviz.org/pdf/dotguide.pdf)
