@@ -2,3 +2,6 @@
 *__pycache__/
 dot_example.txt
 *.dot
+/dist
+/build
+/pandaserd.egg-info

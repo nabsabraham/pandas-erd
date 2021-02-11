@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 HERE = pathlib.Path(__file__).parent
 
 VERSION = '0.1.0'
-PACKAGE_NAME = 'pandas-erd'
+PACKAGE_NAME = 'pandaserd'
 AUTHOR = 'Nabila Abraham'
 AUTHOR_EMAIL = 'nabila.abraham@gmail.com'
 URL = 'https://github.com/nabsabraham/pandas-erd'
