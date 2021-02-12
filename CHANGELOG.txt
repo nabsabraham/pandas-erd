@@ -4,3 +4,7 @@ Change Log
 0.1.0 (11/02/2021)
 ------------------
 * First release
+
+0.1.1 (11/02/2021)
+------------------
+* folder structure fix
