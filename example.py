@@ -1,6 +1,5 @@
 import pandas as pd
-from convert_to_dot import ERD
-
+from pandaserd import ERD
 
 df1 = pd.DataFrame(data=[[123, 32, '1 Ottawa Street'], [123, 80, '14 Canada Road']])
 df1.columns = ['PERSON', 'AGE', 'ADDRESS']
