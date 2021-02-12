@@ -133,6 +133,9 @@ class ERD:
         self.table_gen_code.append(rel)
 
     def write_to_file(self, filename='output.txt'):
+        '''
+        :param filename: file to output the dot code to
+        '''
         self.filename = filename
         tmp = self.table_gen_code
         tmp.append('\t}')
@@ -142,3 +145,4 @@ class ERD:
         text_file.write(self.res)
         text_file.close()
         print(f'written to {self.filename}')
+
