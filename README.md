@@ -26,5 +26,5 @@ erd.write_to_file('output.txt')
 ![example image](example_erd.png "Title")
 
 ### Credits
-Largely inspired by this fab [repo](https://pypi.org/project/ERDot/])!
+Largely inspired by this fab [repo](https://github.com/ehne/ERDot)!
 * dot documentation can be found [here](https://www.graphviz.org/pdf/dotguide.pdf)
