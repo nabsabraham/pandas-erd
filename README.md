@@ -24,7 +24,11 @@ erd.write_to_file('output.txt')
 
 ```
 ![example image](example_erd.png "Title")
-
+### TO-DO 
+* add a relationship tracker 
+* add way to only add meta information rather than whole df 
+* remove kwargs 
+* doc string for create edge method
 ### Credits
 Largely inspired by this fab [repo](https://pypi.org/project/ERDot/])!
 * dot documentation can be found [here](https://www.graphviz.org/pdf/dotguide.pdf)
