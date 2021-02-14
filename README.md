@@ -30,6 +30,7 @@ erd.write_to_file('output.txt')
 ![example image](example_erd.png "Title")
 ### TO-DO 
 * add a relationship tracker 
+* add ability to either use left_on,right_on or on similar to pandas merge
 * add way to only add meta information rather than whole df 
 * remove kwargs 
 * doc string for create edge method
