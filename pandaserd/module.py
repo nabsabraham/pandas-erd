@@ -59,7 +59,7 @@ class ERD:
     """
     Instantiates an ERD object
     Functionality includes adding tables and connecting tables
-    with multiple cardinalities
+    with multiple cardinalities or just connect tables with arrows
 
     """
     def __init__(self):
@@ -88,8 +88,8 @@ class ERD:
             fontname="Helvetica"
         ];''']
 
-    def add_table(self, df, table_name):
-        table = Table(table=df, table_name=table_name)
+    def add_table(self, df, table_name, **kwargs):
+        table = Table(table=df, table_name=table_name, **kwargs)
         self.table_tracker[table_name] = table
         self.table_gen_code.append(table.res)
         return table
@@ -177,12 +177,18 @@ class ERD:
         :param filename: file to output the dot code to
         '''
         self.filename = filename
+
+        # did it already end before?
+        if '\t}' in set(self.table_gen_code):
+            print('it ended previously')
+            self.table_gen_code.remove('\t}')
+
+        self.table_gen_code.append('\t}')
+
         tmp = self.table_gen_code
-        tmp.append('\t}')
         self.res = '\n'.join(tmp)
 
         text_file = open(self.filename, "w")
         text_file.write(self.res)
         text_file.close()
         print(f'written to {self.filename}')
-
