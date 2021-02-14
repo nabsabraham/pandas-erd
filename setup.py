@@ -3,11 +3,11 @@ from setuptools import setup, find_packages
 
 HERE = pathlib.Path(__file__).parent
 
-VERSION = '0.1.2'
+VERSION = '0.1.3'
 PACKAGE_NAME = 'pandaserd'
 AUTHOR = 'Nabila Abraham'
 AUTHOR_EMAIL = 'nabila.abraham@gmail.com'
-URL = 'https://github.com/nabsabraham/pandas-erd/archive/0.1.2.tar.gz'
+URL = 'https://github.com/nabsabraham/pandas-erd'
 
 LICENSE = 'MIT License'
 DESCRIPTION = 'Create ERD diagrams from pandas dataframes.'
