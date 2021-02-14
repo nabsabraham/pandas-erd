@@ -26,7 +26,9 @@ class Table:
         self.pad = 5
         self.align = 'left'
         self.font_color = 'grey60'
-        self.bg_color = kwargs.get('bg_color', 'grey') # ['lightblue', 'skyblue', 'pink', 'lightyellow', 'grey']
+        self.bg_color = kwargs.get('bg_color', 'grey')
+        bg_colors = ['lightblue', 'skyblue', 'pink', 'lightyellow', 'grey', 'gold']
+        assert self.bg_color in set(bg_colors), f"{self.bg_color} not available; color must be one of {bg_colors}"
         self.__construct__()
 
     def __construct__(self):
@@ -202,9 +204,8 @@ class ERD:
         """
         self.filename = filename
 
-        # did it already end before?
+        # did the code already end before?
         if '\t}' in set(self.table_gen_code):
-            print('it ended previously')
             self.table_gen_code.remove('\t}')
 
         self.table_gen_code.append('\t}')
@@ -215,4 +216,6 @@ class ERD:
         text_file = open(self.filename, "w")
         text_file.write(self.res)
         text_file.close()
-        print(f'written to {self.filename}')
+
+        url='https://edotor.net/'
+        print(f'written to {self.filename}; visit {url} to render ERD')

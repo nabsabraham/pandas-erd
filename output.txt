@@ -23,7 +23,7 @@ digraph G {
 
 	 PERSON [ label=<
         <table border="0" cellborder="1" cellspacing="0">
-        <tr><td bgcolor="gold"><b>PERSON</b></td></tr>
+        <tr><td bgcolor="pink"><b>PERSON</b></td></tr>
         
 		<tr><td port="PERSON" align="left" cellpadding="5">PERSON <font color="grey60">int64</font></td></tr>
 		<tr><td port="AGE" align="left" cellpadding="5">AGE <font color="grey60">int64</font></td></tr>
