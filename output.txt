@@ -1,30 +1,29 @@
+digraph G {
+        graph [
+            nodesep=0.5;
+            rankdir="LR";
+            cencentrate=true;
+            splines="spline";
+            fontname="Helvetica";
+            pad="0.2,0.2",
+            label="",
 
-    digraph G {
-            graph [
-                nodesep=0.5;
-                rankdir="LR";
-                cencentrate=true;
-                splines="spline";
-                fontname="Helvetica";
-                pad="0.2,0.2",
-                label="",
-                
-            ];
-    
-    node [shape=plain, fontname="Helvetica"];
-    edge [
-        dir=both,
-        fontsize=12,
-        arrowsize=0.9,
-        penwidth=1.0,
-        labelangle=32,
-        labeldistance=1.8,
-        fontname="Helvetica"
-    ];
+        ];
+
+        node [shape=plain, fontname="Helvetica"];
+        edge [
+            dir=both,
+            fontsize=12,
+            arrowsize=0.9,
+            penwidth=1.0,
+            labelangle=32,
+            labeldistance=1.8,
+            fontname="Helvetica"
+        ];
 
 	 PERSON [ label=<
         <table border="0" cellborder="1" cellspacing="0">
-        <tr><td><b>PERSON</b></td></tr>
+        <tr><td bgcolor="grey"><b>PERSON</b></td></tr>
         
 		<tr><td port="PERSON" align="left" cellpadding="5">PERSON <font color="grey60">int64</font></td></tr>
 		<tr><td port="AGE" align="left" cellpadding="5">AGE <font color="grey60">int64</font></td></tr>
@@ -33,7 +32,7 @@
 
 	 CREDIT_CARD [ label=<
         <table border="0" cellborder="1" cellspacing="0">
-        <tr><td><b>CREDIT_CARD</b></td></tr>
+        <tr><td bgcolor="grey"><b>CREDIT_CARD</b></td></tr>
         
 		<tr><td port="PERSON" align="left" cellpadding="5">PERSON <font color="grey60">int64</font></td></tr>
 		<tr><td port="CREDIT_CARD" align="left" cellpadding="5">CREDIT_CARD <font color="grey60">int64</font></td></tr>
@@ -42,5 +41,8 @@
 		</table>>];
 
 	 PERSON:PERSON->CREDIT_CARD:PERSON [ 
-                arrowhead=ocrow, arrowtail=neneotee];
+                        arrowhead=ocrow, arrowtail=noneotee];
+
+	 PERSON:AGE->CREDIT_CARD:DOB [
+                            arrowtail="none"];
 	}
