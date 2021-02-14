@@ -26,13 +26,13 @@ class Table:
         self.pad = 5
         self.align = 'left'
         self.font_color = 'grey60'
-
+        self.bg_color = 'grey' # ['lightblue', 'skyblue', 'pink', 'lightyellow', 'grey']
         self.__construct__()
 
     def __construct__(self):
         self.front_matter = f'''\n\t {self.table_name} [ label=<
         <table border="0" cellborder="1" cellspacing="0">
-        <tr><td><b>{self.table_name}</b></td></tr>
+        <tr><td bgcolor="{self.bg_color}"><b>{self.table_name}</b></td></tr>
         '''
         table_end = '\t\t' + '</table>>];'
         self.table_def.append(self.front_matter)
@@ -97,6 +97,15 @@ class ERD:
         print(self.table_gen_code)
 
     def create_edge(self, table1_name, table2_name, **kwargs):
+        '''
+
+        :param table1_name: Table object
+        :param table2_name: Table object
+        :param left_cardinality: '*' or '+'; default is none
+        :param: right_cardinality: '*' or '+'; default is none
+
+
+        '''
         try:
             table1 = self.table_tracker[table1_name]
         except:
@@ -119,14 +128,14 @@ class ERD:
         elif left_cardinality == '+':
             arrowtail = 'noneotee'
         else:
-            arrowtail = 'neneotee'
+            arrowtail = 'none'
 
         if right_cardinality == '*':
             arrowhead = 'ocrow'
         elif right_cardinality == '+':
             arrowhead = 'noneotee'
         else:
-            arrowhead = 'neneotee'
+            arrowhead = 'none'
 
         rel = f'''\n\t {table1.table_name}:{left_on}->{table2.table_name}:{right_on} [ 
                 arrowhead={arrowhead}, arrowtail={arrowtail}];'''
