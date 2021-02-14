@@ -3,12 +3,11 @@ import pandas as pd
 
 
 class Table:
-    '''
-    meta_info: (df) - get df schema from BQ as pandas DataFrame
-    table_info: (str) - name of the table
-    filename: (str) - filename to save dot code - default is output.txt
-    '''
-
+    """
+    Instantiates a Table object which houses information about each table/df
+    :param table: (pandas DataFrame) - df/table you want to add to the diagram
+    :param table_name: (str) Name of the table
+    """
     def __init__(self, table, table_name, **kwargs):
         if isinstance(table, pd.core.frame.DataFrame):
             # pass a whole dataframe
@@ -57,8 +56,7 @@ class Table:
 
 class ERD:
     """
-    Instantiates an ERD object
-    Functionality includes adding tables and connecting tables
+    Instantiates an ERD object whose functionality includes adding tables and connecting tables
     with multiple cardinalities or just connect tables with arrows
 
     """
@@ -133,6 +131,29 @@ class ERD:
         return rel
 
     def create_rel(self, left_table_name, right_table_name, left_on=None, right_on=None, on=None, **kwargs):
+        """
+        Generates a relationship between two tables with either cardinality or just flowchart arrows.
+
+        :param left_table_name: (str)
+        :param right_table_name: (str)
+        :param left_on: (str) Column in the left table
+        :param right_on: (str) Column in the right table
+        :param on: (str) Common column in both tables
+        :param kwargs:
+            left_cardinality (str):
+                '*' = zero or more
+                '+' = 1 or more
+                '1' = 1
+            right_cardinality (str):
+                '*' = zero or more
+                '+' = 1 or more
+                '1' = 1
+            left_arrow (bool):
+                True : if you want the arrow to point from right to left
+            right_arrow (bool):
+                True : if you want the arrow to point from left to right
+        :return None
+        """
         # get the tables referenced by their name
         try:
             self.left = self.table_tracker[left_table_name]
@@ -172,10 +193,13 @@ class ERD:
             rel = self.__make_edge__()
             self.table_gen_code.append(rel)
 
+
     def write_to_file(self, filename='output.txt'):
-        '''
-        :param filename: file to output the dot code to
-        '''
+        """
+        Encloses the current tables and relationships into a DiGraph object (dot code) and
+        writes output dot code to a text file.
+        :param filename: (str) file to output the dot code to
+        """
         self.filename = filename
 
         # did it already end before?
