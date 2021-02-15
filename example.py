@@ -10,9 +10,6 @@ erd = ERD()
 t1 = erd.add_table(df1, 'PERSON', bg_color='pink')
 t2 = erd.add_table(df2, 'CREDIT_CARD', bg_color='skyblue')
 erd.create_rel('PERSON', 'CREDIT_CARD', on='PERSON', right_cardinality='*')
-
-erd.write_to_file('output.txt')
-
 erd.create_rel('PERSON', 'CREDIT_CARD', left_on='AGE', right_on='PERSON_AGE', left_cardinality='+', right_cardinality='+')
 
 erd.write_to_file('output.txt')
