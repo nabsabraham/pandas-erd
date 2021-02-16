@@ -1,32 +1,31 @@
-import pathlib
-from setuptools import setup, find_packages
+import setuptools
+import subprocess
+import os
 
-HERE = pathlib.Path(__file__).parent
+cf_remote_version = subprocess.run(['git', 'describe', '--tags'], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+assert "." in cf_remote_version
 
-VERSION = '0.1.3'
-PACKAGE_NAME = 'pandaserd'
-AUTHOR = 'Nabila Abraham'
-AUTHOR_EMAIL = 'nabila.abraham@gmail.com'
-URL = 'https://github.com/nabsabraham/pandas-erd'
+assert os.path.isfile("pandaserd/version.py")
+with open("pandaserd/VERSION", "w", encoding="utf-8") as fh:
+    fh.write(f"{remote_version}\n")
 
-LICENSE = 'MIT License'
-DESCRIPTION = 'Create ERD diagrams from pandas dataframes.'
-LONG_DESCRIPTION = (HERE / "README.md").read_text()
-LONG_DESC_TYPE = "text/markdown"
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
 
-INSTALL_REQUIRES = [
-      'pandas'
-]
-
-setup(name=PACKAGE_NAME,
-      version=VERSION,
-      description=DESCRIPTION,
-      long_description=LONG_DESCRIPTION,
-      long_description_content_type=LONG_DESC_TYPE,
-      author=AUTHOR,
-      license=LICENSE,
-      author_email=AUTHOR_EMAIL,
-      url=URL,
-      install_requires=INSTALL_REQUIRES,
-      packages=find_packages()
-      )
+setuptools.setup(
+    name="pandaserd",
+    version=remote_version,
+    author="Nabila Abraham",
+    author_email="nabila.abraham@gmail.com",
+    description="Create ERD/data flow diagrams from pandas dataframes.",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://github.com/nabsabraham/pandas-erd",
+    packages=setuptools.find_packages(),
+    package_data={'pandaserd': ['VERSION']},
+    include_package_data=True,
+    python_requires='>=3.6',
+    install_requires = [
+            'pandas'
+      ]
+)
