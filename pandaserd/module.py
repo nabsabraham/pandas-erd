@@ -20,6 +20,7 @@ class Table:
         else:
             print(f' {type(table)} not accepted. must be a pandas dataframe')
 
+        table_name = table_name.replace("-", "_")
         self.table_name = table_name
         self.table_def = []
 
