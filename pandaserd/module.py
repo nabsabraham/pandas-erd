@@ -39,6 +39,7 @@ class Table:
         table_end = '\t\t' + '</table>>];'
         self.table_def.append(self.front_matter)
         for col, col_type in self.meta_info:
+            col = col.replace("-", "_")
             self.table_def.append(
                 '\t\t' + f'''<tr><td port="{col}" align="{self.align}" cellpadding="{self.pad}">{col} <font color="{self.font_color}">{col_type}</font></td></tr>''')
         self.table_def.append(table_end)
