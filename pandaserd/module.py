@@ -67,14 +67,13 @@ class ERD:
         self.rel_tracker = set()
         self.table_gen_code = ['''digraph G {
         graph [
-            nodesep=0.5;
-            rankdir="LR";
-            cencentrate=true;
-            splines="spline";
-            fontname="Helvetica";
+            nodesep=0.5,
+            rankdir="LR",
+            concentrate=true,
+            splines="spline",
+            fontname="Helvetica",
             pad="0.2,0.2",
-            label="",
-
+            label=""
         ];
 
         node [shape=plain, fontname="Helvetica"];
@@ -196,7 +195,7 @@ class ERD:
             self.table_gen_code.append(rel)
 
 
-    def write_to_file(self, filename='output.txt'):
+    def write_to_file(self, filename='output.gv'):
         """
         Encloses the current tables and relationships into a DiGraph object (dot code) and
         writes output dot code to a text file.
