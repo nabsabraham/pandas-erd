@@ -1,6 +1,11 @@
 import json
 import pandas as pd
+import pathlib as Path
 
+html_colors = [ 
+    item['name'].lower()
+    for item in json.loads( open('pandaserd/colors.json', 'r').read() )
+]
 
 class Table:
     """
@@ -27,7 +32,9 @@ class Table:
         self.align = 'left'
         self.font_color = 'grey60'
         self.bg_color = kwargs.get('bg_color', 'grey')
-        bg_colors = ['lightblue', 'skyblue', 'pink', 'lightyellow', 'grey', 'gold']
+        # TODO: Set font_color complementary to bg_color
+        bg_colors = html_colors #['lightblue', 'skyblue', 'pink', 'lightyellow', 'grey', 'gold']
+        # ToDO: Check for hexadecimal coding and allow if pass. 
         assert self.bg_color in set(bg_colors), f"{self.bg_color} not available; color must be one of {bg_colors}"
         self.__construct__()
 
