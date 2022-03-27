@@ -20,3 +20,9 @@ Change Log
 * left_on, right_on, on functionality for create_edge method similar to pandas merge
 * added url to graphviz renderer
 * added bg_color attribute to Table object
+
+0.1.4 (27/03/2022)
+-------------------
+* added full html color list to bg_color attribute options
+* refactored above for module import
+* added graphviz renderer for to_file, based on suffix 
