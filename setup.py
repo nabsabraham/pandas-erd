@@ -2,7 +2,11 @@ import setuptools
 import subprocess
 import os
 
-remote_version = subprocess.run(['git', 'describe', '--tags'], stdout=subprocess.PIPE).stdout.decode("utf-8").strip()
+remote_version = (
+    subprocess.run(["git", "describe", "--tags"], stdout=subprocess.PIPE)
+    .stdout.decode("utf-8")
+    .strip()
+)
 assert "." in remote_version
 
 assert os.path.isfile("pandaserd/version.py")
@@ -22,10 +26,11 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/nabsabraham/pandas-erd",
     packages=setuptools.find_packages(),
-    package_data={'pandaserd': ['VERSION']},
+    package_data={"pandaserd": ["VERSION"]},
     include_package_data=True,
-    python_requires='>=3.6',
-    install_requires = [
-            'pandas'
-      ]
+    python_requires=">=3.6",
+    install_requires=[
+        "pandas",
+        "graphviz",
+    ],
 )

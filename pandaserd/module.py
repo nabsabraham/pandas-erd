@@ -1,6 +1,8 @@
-import json
 import pandas as pd
-
+import importlib.resources
+from pathlib import Path
+import json
+from graphviz import Source
 
 class Table:
     """
@@ -9,6 +11,11 @@ class Table:
     :param table_name: (str) Name of the table
     """
     def __init__(self, table, table_name, **kwargs):
+        # Load html color data
+        with importlib.resources.open_text("pandaserd", "colors.json") as fid:
+            color_data = json.load(fid)
+        self.html_colors = [item['name'].lower() for item in color_data]
+
         if isinstance(table, pd.core.frame.DataFrame):
             # pass a whole dataframe
             meta = table.dtypes
@@ -27,7 +34,9 @@ class Table:
         self.align = 'left'
         self.font_color = 'grey60'
         self.bg_color = kwargs.get('bg_color', 'grey')
-        bg_colors = ['lightblue', 'skyblue', 'pink', 'lightyellow', 'grey', 'gold']
+        bg_colors = self.html_colors #['lightblue', 'skyblue', 'pink', 'lightyellow', 'grey', 'gold']
+        # TODO: Set font_color complementary to bg_color
+        # TODO: Check for hexadecimal coding and allow if pass. 
         assert self.bg_color in set(bg_colors), f"{self.bg_color} not available; color must be one of {bg_colors}"
         self.__construct__()
 
@@ -196,26 +205,30 @@ class ERD:
             self.table_gen_code.append(rel)
 
 
-    def write_to_file(self, filename='output.txt'):
+    def write_to_file(self, filename: str = 'output.dot'):
         """
         Encloses the current tables and relationships into a DiGraph object (dot code) and
         writes output dot code to a text file.
         :param filename: (str) file to output the dot code to
         """
-        self.filename = filename
-
         # did the code already end before?
         if '\t}' in set(self.table_gen_code):
             self.table_gen_code.remove('\t}')
-
         self.table_gen_code.append('\t}')
-
         tmp = self.table_gen_code
         self.res = '\n'.join(tmp)
 
-        text_file = open(self.filename, "w")
-        text_file.write(self.res)
-        text_file.close()
+        path = Path(filename)
+        self.filename = path.with_suffix('.dot')
+        dot_file = open(self.filename.as_posix(), "w")
+        dot_file.write(self.res)
+        dot_file.close()
 
-        url='https://edotor.net/'
-        print(f'written to {self.filename}; visit {url} to render ERD')
+        if path.suffix != '.dot':
+            src = Source.from_file(self.filename.as_posix())
+            fmt = path.suffix.replace('.', '')
+            src.render(path.with_suffix(''), format=fmt)
+            print(f'image written to {filename}')
+        else:
+            url='https://edotor.net/'
+            print(f'written to {self.filename}; visit {url} to render ERD')
